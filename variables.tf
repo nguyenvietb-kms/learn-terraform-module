@@ -6,7 +6,11 @@ variable "region" {
   type        = string
   default     = "us-east-2"
 }
-
+variable "account_id" {
+  description = "The account id"
+  type        = string
+  default     = "575108915615"
+}
 variable "tag_environment" {
   description = "The Application environment (labs, dev, uat, sit, prod, etc)"
   type        = string
@@ -68,25 +72,37 @@ variable "number_of_workers" {
 variable "script_location" {
   description = "S3 location of the script to be executed by the Glue job"
   type        = string
-  default     = "s3://test-bucket-bvn/Python/GLUE_DATABASE_EXTRACTION_FRAMEWORK.py"
+  default     = "s3://test-bucket-bvn/database_extraction_framework/scripts/GLUE_DATABASE_EXTRACTION_FRAMEWORK.py"
 }
 variable "python_version" {
   default = "3"
 }
 variable "arguments" {
   type    = map(any)
-  default = {}
+  default = {
+    "--table_list" = "sqltablelist"
+    "--database" = "test_glue_database"
+    "--bucket" = "test-bucket-bvn"
+    "--deployment" = "test"
+    "--secret_name" = "test_secret"
+    "--dataformat" = "parquet"
+    "--s3prefix" = "DataExtraction"
+    "--glue_database" = "test_glue_database"
+    "--enable-continuous-cloudwatch-log" = "true"
+    "--continuous-log-logGroup" = "/aws-glue/jobs/test_job"
+    "--extra-jars" = "s3://test-bucket-bvn/database_extraction_framework/resources/drivers/sqlserver/mssql-jdbc-8.4.1.jre8.jar"
+  }
 }
 variable "description" {
   default = "Test Terraform AWS Glue"
 }
 variable "max_retries" {
-  default = 2
+  default = 0
 }
 variable "timeout" {
   default = 2880
 }
-variable "glue_version" { default = "2.0" }
+variable "glue_version" { default = "3.0" }
 variable "max_concurrent" {
   default = 1
 }
