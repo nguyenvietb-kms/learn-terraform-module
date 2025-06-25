@@ -33,8 +33,12 @@ variable "command_name" {
     error_message = "Values other than \"glueetl\" or \"pythonshell\" are not acceptable."
   }
 }
-
-variable "gluejob_name" {
+variable "database_extraction_framework_job_name" {
+  type        = string
+  default     = ""
+  description = "Name of the glue job when not required as default format"
+}
+variable "snowflake_ingestion_framework_job_name" {
   type        = string
   default     = ""
   description = "Name of the glue job when not required as default format"
@@ -69,15 +73,20 @@ variable "number_of_workers" {
   description = "Number of worker nodes"
   default     = 2
 }
-variable "script_location" {
+variable "database_extraction_framework_script_location" {
   description = "S3 location of the script to be executed by the Glue job"
   type        = string
   default     = "s3://test-bucket-bvn/database_extraction_framework/scripts/GLUE_DATABASE_EXTRACTION_FRAMEWORK.py"
 }
+variable "snowflake_ingestion_framework_script_location" {
+  description = "S3 location of the script to be executed by the Glue job"
+  type        = string
+  default     = "s3://test-bucket-bvn/snowflake_ingestion_framework/scripts/INGESTION_SNOWFLAKE_FRAMEWORK.py"
+}
 variable "python_version" {
   default = "3"
 }
-variable "arguments" {
+variable "database_extraction_framework_arguments" {
   type    = map(any)
   default = {
     "--table_list" = "sqltablelist"
@@ -89,8 +98,22 @@ variable "arguments" {
     "--s3prefix" = "DataExtraction"
     "--glue_database" = "test_glue_database"
     "--enable-continuous-cloudwatch-log" = "true"
-    "--continuous-log-logGroup" = "/aws-glue/jobs/test_job"
+    "--continuous-log-logGroup" = "/aws-glue/jobs/database_extraction_framework_job"
     "--extra-jars" = "s3://test-bucket-bvn/database_extraction_framework/resources/drivers/sqlserver/mssql-jdbc-8.4.1.jre8.jar"
+  }
+}
+variable "snowflake_ingestion_framework_arguments" {
+  type    = map(any)
+  default = {
+    "--secret_name" = "snowflake_secret"
+	"--deployment" = "test"
+	"--s3_bucket" = "test-bucket-bvn"
+	"--s3prefix" = "DataExtraction"
+	"--athena_database" = "test_glue_database"
+    "--table_list" = "sqltablelist_snowflake"
+    "--enable-continuous-cloudwatch-log" = "true"
+    "--continuous-log-logGroup" = "/aws-glue/jobs/snowflake_ingestion_framework_job"
+    "--extra-jars" = "s3://test-bucket-bvn/snowflake_ingestion_framework/resources/drivers/snowflake-jdbc-3.13.22.jar,s3://test-bucket-bvn/snowflake_ingestion_framework/resources/drivers/spark-snowflake_2.12-2.11.0-spark_3.1.jar"
   }
 }
 variable "description" {
