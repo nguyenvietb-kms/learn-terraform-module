@@ -11,6 +11,16 @@ variable "account_id" {
   type        = string
   default     = "575108915615"
 }
+variable "environment" {
+  description = "The Application environment (labs, dev, uat, sit, prod, etc)"
+  type        = string
+  default     = "DEV"
+
+  validation {
+    condition     = contains(["test", "labs", "dev", "nonprod", "uat", "prod"], var.tag_environment)
+    error_message = "Valid values for var: environment are (test, labs, nonprod, dev, uat, prod)."
+  }
+}
 variable "tag_environment" {
   description = "The Application environment (labs, dev, uat, sit, prod, etc)"
   type        = string
@@ -44,7 +54,7 @@ variable "snowflake_ingestion_framework_job_name" {
   description = "Name of the glue job when not required as default format"
 }
 variable "project" {
-  default = "bvn"
+  default = "NHE_INSIGHTS"
 }
 variable "job_source" {
   default = "js1"
